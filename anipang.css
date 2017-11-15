@@ -1,0 +1,11 @@
+*{margin: 0 auto; padding: 0;}
+
+body{margin: 0 auto;}
+#wrap{width: 290px; height: 470px; margin: 0 auto; padding-top: 50px;b}
+
+h1{font-size: 30px; margin: 30px; text-align: center; color: #534847;}
+#pang{display: inline-block; width: 287px; height: 287px; border: 1px solid #7C7877}
+
+span{display: inline-block; width: 39px; height: 39px;text-align: center; line-height: 39px; border: 1px solid #7C7877}
+#footer{width: 290px;border:}
+#btn{width: 290px; height: 60px; margin: 0 auto; font-size: 17px; color: #534847;  background-color: #D9D4CF; border: 2px solid #7C7877; border-top: 0 solid #7C7877;}
