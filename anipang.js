@@ -1,4 +1,6 @@
 var characterArr = [];
+var up, down, left, right;
+var key;
 
 
 //배열을 만드는 함수
@@ -33,17 +35,19 @@ function updateHtml(arr){
 updateHtml(characterArr);
 
 
-document.getElementById("pang").addEventListener("click", findNeighbor);
+document.getElementById("pang").addEventListener("click", ableToMove);
 
 //클릭된 값의 상하좌우 값 가져오기
 //arr : 캐릭배열
 //return : 없음
-function findNeighbor(event){
+function ableToMove(event){
+
+
 	var v = getPosition(event);
 	var vx = Number(v[0]);
 	var vy = Number(v[1]);
+	
 
-	var up, down, left, right;
 	up = down = left = right = -1; //좌표중에 -1은 없는값
 	if(vx !== -1){
 		if(vx > 0){
@@ -59,48 +63,97 @@ function findNeighbor(event){
 			right = characterArr[vx][vy + 1];
 		}
 	}
+	changePang(characterArr);
+	updateHtml(characterArr);
 	console.log(up, down, left, right);
+
+	
+	//return up, down, left, right;
+
 }
+
+var count = 0;
+
+
+//처음 클릭한 값과 두번째 클릭한(상하좌우)값 체인지
+//arr : 캐릭배열
+//return : 없음
+function changePang(arr){
+
+	count++;
+	console.log("count",count);
+	var v, vx, vy;
+	var pos, posx, posy
+
+		/*
+			문제점 상하좌우 위치를 값으로 가져와서
+			중복되는 숫자면 위치에 상관없이 
+			스왑이 가능해짐 
+			위치를 값이 아닌 인덱스값으로 
+			가져오기로 구현
+		*/
+
+	if(count % 2 == 1){
+		// v = getPosition(event);
+		// vx = Number(v[0]);
+		// vy = Number(v[1]);
+		// console.log("v, vx, vy",v, vx, vy);
+
+		key = event.target.innerHTML;
+		console.log("key",key);
+	}
+	if(count % 2 == 0){
+		pos = getPosition(event);
+		posx = Number(pos[0]);
+		posy = Number(pos[1]);
+		console.log("pos, posx, posy",pos, posx, posy);
+
+		if(key == up){
+			characterSwap(arr, posx, posy, posx - 1, posy);
+		} else if(key == down){
+			characterSwap(arr, posx, posy, posx + 1, posy);
+		} else if(key == left){
+			characterSwap(arr, posx, posy, posx, posy - 1);
+		} else if(key == right){
+			characterSwap(arr, posx, posy, posx, posy + 1);
+		} else {
+			console.log("못바꿈");
+		}
+	}
+
+
+
+
+}
+
+
+function characterSwap(arr, x1, y1, x2, y2) {
+	var temp = arr[x1][y1];
+	arr[x1][y1] = arr[x2][y2];
+	arr[x2][y2] = temp;
+}
+
 
 
 //클릭이벤트 함수
 function getPosition(event){
-	
 	var id = event.target.id;
 	var arrId = id.split("");
 	arrId.shift();
-	
+
+
+	//console.log(arrId);
+/*
+	//target에 drag setAttribute 
+	var set = event.target;
+	console.log(set);		
+	set.setAttribute("draggable", "true");
+	set.setAttribute("ondragstart", "drag(event)");
+*/
 	return arrId;
 }
 
 
-
-
-/*
-
-//클릭한 값 위치 가져오기
-//arr : 캐릭배열, v : 클릭한값
-//return : 값이 있으면 pos리턴 없으면 null 리턴
-function findPosition(arr, v){
-	var pos = {x : -1, y : -1}; //-1은 없는값으로 초기화
-	for(var i = 0; i < 7; i++){
-		for(var j = 0; j < 7; j++){
-			if(arr[i][j] ==  v ){
-				pos.x = i;
-				pos.y = j;
-				break;
-			}
-		}
-	}
-	if(pos.x !== -1){
-		console.log(pos);
-		return pos;
-	} else {
-		return null;
-	}
-}
-
-*/
 
 
 
