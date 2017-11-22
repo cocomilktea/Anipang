@@ -1,6 +1,6 @@
 var characterArr = [];
-var up, down, left, right;
-var key;
+
+
 
 
 //배열을 만드는 함수
@@ -17,8 +17,6 @@ function generateArr(arr){
 	}
 }
 generateArr(characterArr);
-console.log(characterArr);
-
 
 
 //html화면에 뿌려주기
@@ -35,45 +33,19 @@ function updateHtml(arr){
 updateHtml(characterArr);
 
 
-document.getElementById("pang").addEventListener("click", ableToMove);
-
-//클릭된 값의 상하좌우 값 가져오기
-//arr : 캐릭배열
-//return : 없음
-function ableToMove(event){
+document.getElementById("pang").addEventListener("click", clickCharacter);
 
 
-	var v = getPosition(event);
-	var vx = Number(v[0]);
-	var vy = Number(v[1]);
-	
+function clickCharacter(event){
 
-	up = down = left = right = -1; //좌표중에 -1은 없는값
-	if(vx !== -1){
-		if(vx > 0){
-			up = characterArr[vx - 1][vy];
-		}
-		if(vy > 0){
-			left = characterArr[vx][vy - 1];
-		}
-		if(vx < 6){
-			down = characterArr[vx + 1][vy];
-		}
-		if(vy < 6){
-			right = characterArr[vx][vy + 1];
-		}
-	}
 	changePang(characterArr);
 	updateHtml(characterArr);
-	console.log(up, down, left, right);
-
 	
-	//return up, down, left, right;
-
 }
 
 var count = 0;
-
+var pos = {x: -1, y:-1};
+var key = {x: -1, y:-1};
 
 //처음 클릭한 값과 두번째 클릭한(상하좌우)값 체인지
 //arr : 캐릭배열
@@ -82,48 +54,36 @@ function changePang(arr){
 
 	count++;
 	console.log("count",count);
-	var v, vx, vy;
-	var pos, posx, posy
-
-		/*
-			문제점 상하좌우 위치를 값으로 가져와서
-			중복되는 숫자면 위치에 상관없이 
-			스왑이 가능해짐 
-			위치를 값이 아닌 인덱스값으로 
-			가져오기로 구현
-		*/
-
+	//first click, save key
 	if(count % 2 == 1){
-		// v = getPosition(event);
-		// vx = Number(v[0]);
-		// vy = Number(v[1]);
-		// console.log("v, vx, vy",v, vx, vy);
-
-		key = event.target.innerHTML;
+		var k = getPosition(event);
+		key.x = k[0];
+		key.y = k[1];
 		console.log("key",key);
-	}
-	if(count % 2 == 0){
-		pos = getPosition(event);
-		posx = Number(pos[0]);
-		posy = Number(pos[1]);
-		console.log("pos, posx, posy",pos, posx, posy);
 
-		if(key == up){
-			characterSwap(arr, posx, posy, posx - 1, posy);
-		} else if(key == down){
-			characterSwap(arr, posx, posy, posx + 1, posy);
-		} else if(key == left){
-			characterSwap(arr, posx, posy, posx, posy - 1);
-		} else if(key == right){
-			characterSwap(arr, posx, posy, posx, posy + 1);
+	} else if(count % 2 == 0){ 
+		//second click
+		var p  = getPosition(event);	
+		pos.x = p[0];
+		pos.y = p[1];
+		console.log("pos",pos);
+
+		var move = false;
+		if(key.x == pos.x && Math.abs(key.y - pos.y) === 1) {
+				move = true;
+		}
+		if (key.y == pos.y && Math.abs(key.x - pos.x) === 1) {
+				move = true;
+		}
+
+		if (move) {
+			characterSwap(arr, key.x, key.y, pos.x, pos.y);
+			check(arr);
 		} else {
 			console.log("못바꿈");
 		}
+		count = 0;
 	}
-
-
-
-
 }
 
 
@@ -134,26 +94,104 @@ function characterSwap(arr, x1, y1, x2, y2) {
 }
 
 
-
 //클릭이벤트 함수
 function getPosition(event){
 	var id = event.target.id;
-	var arrId = id.split("");
+	var arrId = id.split("").map(Number);
 	arrId.shift();
 
+	return arrId;
 
-	//console.log(arrId);
 /*
 	//target에 drag setAttribute 
 	var set = event.target;
 	console.log(set);		
 	set.setAttribute("draggable", "true");
 	set.setAttribute("ondragstart", "drag(event)");
-*/
-	return arrId;
+*/	
+}
+
+function countRow(arr, i, j) {
+	var x = arr[i][j]
+	var countX = 0;
+	while(j < 7) {
+		//console.log("j",j);		
+		if (arr[i][j] == x) {
+			countX++;
+		} else {
+			break;
+		}
+		j++;
+	}
+	return countX;
+}
+
+function countCol(arr, i, j){
+	var y = arr[i][j];
+	var countY = 0;
+	while(i < 7){
+		//console.log("ij",i, j);
+		if(arr[i][j] == y){
+			countY++;
+		} else {
+			break;
+		}
+		i++;
+	}
+	return countY;
+}
+
+function check(arr){
+	for(var i = 0; i < 7; i++){
+		for(var j = 0; j < 5; j++){
+			var x = countRow(arr, i, j);
+			if (x >= 3) {
+				console.log("줄 지워!", i, j, x);
+				eraseRow(arr, i, j, x);
+			}
+		}
+	}
+
+	for(var j = 0; j < 7; j++){
+		for(var i = 0; i < 5; i++){
+			var y = countCol(arr, i, j);
+			if (y >= 3) {
+				console.log("열 지워!", i, j, y);
+				eraseCol(arr, i, j, y);
+			} 
+		}
+	}		
+	
 }
 
 
 
+function eraseRow(arr, x, y, n){
 
+	for(var i = x; i >= 0; i--){
+		for(var j = 0; j < n; j++){
+			if(i == 0){
+				var r = Math.floor(Math.random() * 8 + 1);
+				arr[i][y + j] = r;
+			} else {
+				arr[i][y + j] = arr[i - 1][y + j];
+			}			
+		}
+	}
+}
+
+
+function eraseCol(arr, x, y, n){
+
+	for(var i = 0; i < n; i++){
+		if((x + i) - n < 0){
+			var r = Math.floor(Math.random() * 8 + 1);
+			arr[x + i][y] = r;
+		} else {
+			arr[x + i][y] = arr[(x + i) - n][y];
+			var r = Math.floor(Math.random() * 8 + 1);
+			arr[(x + i) - n][y] = r;			
+		}
+	}
+}
 
