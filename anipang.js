@@ -1,3 +1,4 @@
+var numArr = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7];
 var characterArr = [];
 
 
@@ -11,12 +12,14 @@ function generateArr(arr){
 		characterArr[i] = [];
 		for(var j = 0; j < 7; j++){
 			//characterArr[i][j] = i * 7 + j +1;
-			var r = Math.floor(Math.random() * 8 + 1);
-			characterArr[i][j] = r;
+			var r = Math.floor(Math.random() * numArr.length);
+			characterArr[i][j] = numArr[r];
 		}
 	}
 }
 generateArr(characterArr);
+
+
 
 
 //html화면에 뿌려주기
@@ -27,10 +30,45 @@ function updateHtml(arr){
 		for(var j = 0; j < 7; j++){
 			var h = document.getElementById("n"+i+j);
 			h.innerHTML = characterArr[i][j];
+
+			var x = document.createElement("IMG");
+			
+			if(characterArr[i][j] == 1){		
+   				x.setAttribute("src", "img/jl01.png");
+			}
+			if(characterArr[i][j] == 2){		
+   				x.setAttribute("src", "img/jina01.png");
+			}
+			if(characterArr[i][j] == 3){		
+   				x.setAttribute("src", "img/hena01.png");
+			}			
+			if(characterArr[i][j] == 4){		
+   				x.setAttribute("src", "img/koo01.png");
+			}
+			if(characterArr[i][j] == 5){		
+   				x.setAttribute("src", "img/jack01.png");
+			}
+			if(characterArr[i][j] == 6){		
+   				x.setAttribute("src", "img/hyun01.png");
+			}
+			if(characterArr[i][j] == 7){		
+   				x.setAttribute("src", "img/honux.png");
+			}			
+
+
+
+			   	x.setAttribute("width", "45");
+   				x.setAttribute("height", "45");
+			    x.setAttribute("alt", "Pang");
+			   	h.appendChild(x);
+
+			   	//setInterval(myImg(), 5000);
 		}
 	}
 }
 updateHtml(characterArr);
+
+
 
 
 document.getElementById("pang").addEventListener("click", clickCharacter);
@@ -60,6 +98,14 @@ function changePang(arr){
 		key.x = k[0];
 		key.y = k[1];
 		console.log("key",key);
+		if(arr[key.x][key.y] == 7){
+			itemSkillCol(arr, 0, key.y); 
+			itemSkillRow(arr, 6, 0);				
+			var r = Math.floor(Math.random() * numArr.length);
+			arr[key.x + 1][key.y] = numArr[r];
+							
+			count = 0;
+		}
 
 	} else if(count % 2 == 0){ 
 		//second click
@@ -148,6 +194,7 @@ function check(arr){
 			if (x >= 3) {
 				console.log("줄 지워!", i, j, x);
 				eraseRow(arr, i, j, x);
+
 			}
 		}
 	}
@@ -164,15 +211,16 @@ function check(arr){
 	
 }
 
-
-
+//행을 지우는 함수
+//arr:캐릭배열 x:idx0 y:idx1 n:중복값 개수
 function eraseRow(arr, x, y, n){
 
 	for(var i = x; i >= 0; i--){
 		for(var j = 0; j < n; j++){
 			if(i == 0){
-				var r = Math.floor(Math.random() * 8 + 1);
-				arr[i][y + j] = r;
+
+				var r = Math.floor(Math.random() * numArr.length);
+				arr[i][y + j] = numArr[r];
 			} else {
 				arr[i][y + j] = arr[i - 1][y + j];
 			}			
@@ -180,18 +228,43 @@ function eraseRow(arr, x, y, n){
 	}
 }
 
-
+//열을 지우는 함수
+//arr:캐릭배열 x:idx0 y:idx1 n:중복값 개수
 function eraseCol(arr, x, y, n){
 
 	for(var i = 0; i < n; i++){
 		if((x + i) - n < 0){
-			var r = Math.floor(Math.random() * 8 + 1);
-			arr[x + i][y] = r;
+			var r = Math.floor(Math.random() * numArr.length);
+			arr[x + i][y] = numArr[r];
 		} else {
 			arr[x + i][y] = arr[(x + i) - n][y];
-			var r = Math.floor(Math.random() * 8 + 1);
-			arr[(x + i) - n][y] = r;			
+			var r = Math.floor(Math.random() * numArr.length);
+			arr[(x + i) - n][y] = numArr[r];			
 		}
 	}
 }
+
+
+function itemSkillRow(arr, x, y){
+
+	for(var i = x; i >= 0; i--){
+		for(var j = 0; j < 7; j++){
+			if(i == 0){
+				var r = Math.floor(Math.random() * numArr.length);
+				arr[i][y + j] = numArr[r];
+			} else {
+				arr[i][y + j] = arr[i - 1][y + j];
+			}			
+		}
+	}	
+}
+
+
+function itemSkillCol(arr, x, y){
+	for(var i = 0; i < 7; i++){
+		var r = Math.floor(Math.random() * numArr.length);
+		arr[i][y] = numArr[r];					
+	}
+}
+
 
