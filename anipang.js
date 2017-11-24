@@ -4,9 +4,8 @@ var characterArr = [];
 
 
 
+
 //배열을 만드는 함수
-//arr : 캐릭배열
-//return : 없음
 function generateArr(arr){
 	for(var i = 0; i < 7; i++){
 		characterArr[i] = [];
@@ -21,35 +20,57 @@ generateArr(characterArr);
 
 
 
-
 //html화면에 뿌려주기
-//arr : 캐릭배열
-//return : 없음
 function updateHtml(arr){
 	for(var i = 0; i < 7; i++){
 		for(var j = 0; j < 7; j++){
 			var h = document.getElementById("n"+i+j);
 			h.innerHTML = characterArr[i][j];
-
 			var x = document.createElement("IMG");
+			x.setAttribute("id", "m"+i+j); 
 			
-			if(characterArr[i][j] == 1){		
-   				x.setAttribute("src", "img/jl01.png");
+			if(characterArr[i][j] == 1 ){		
+				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
+   					x.setAttribute("src", "img/jl02.png");
+   				} else {
+   					x.setAttribute("src", "img/jl01.png");
+
+   				}
 			}
-			if(characterArr[i][j] == 2){		
-   				x.setAttribute("src", "img/jina01.png");
+			if(characterArr[i][j] == 2){	
+				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
+   					x.setAttribute("src", "img/jina02.png");
+   				} else {
+   					x.setAttribute("src", "img/jina01.png");;
+   				}				
 			}
-			if(characterArr[i][j] == 3){		
-   				x.setAttribute("src", "img/hena01.png");
+			if(characterArr[i][j] == 3){	
+				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
+   					x.setAttribute("src", "img/heana02.png");
+   				} else {
+   					x.setAttribute("src", "img/heana01.png");
+   				}					
 			}			
-			if(characterArr[i][j] == 4){		
-   				x.setAttribute("src", "img/koo01.png");
+			if(characterArr[i][j] == 4){	
+				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
+   					x.setAttribute("src", "img/koo02.png");
+   				} else {
+   					x.setAttribute("src", "img/koo01.png");
+   				}								
 			}
-			if(characterArr[i][j] == 5){		
-   				x.setAttribute("src", "img/jack01.png");
+			if(characterArr[i][j] == 5){	
+				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
+   					x.setAttribute("src", "img/jack02.png");
+   				} else {
+   					x.setAttribute("src", "img/jack01.png");
+   				}				
 			}
-			if(characterArr[i][j] == 6){		
-   				x.setAttribute("src", "img/hyun01.png");
+			if(characterArr[i][j] == 6){	
+				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
+   					x.setAttribute("src", "img/hyun02.png");
+   				} else {
+   					x.setAttribute("src", "img/hyun01.png");
+   				}					
 			}
 			if(characterArr[i][j] == 7){		
    				x.setAttribute("src", "img/honux.png");
@@ -65,6 +86,8 @@ function updateHtml(arr){
 			   	//setInterval(myImg(), 5000);
 		}
 	}
+	console.log("update", key);
+
 }
 updateHtml(characterArr);
 
@@ -74,20 +97,22 @@ updateHtml(characterArr);
 document.getElementById("pang").addEventListener("click", clickCharacter);
 
 
-function clickCharacter(event){
 
+//캐릭터 클릭 하면 실행되는 이벤트함수 
+function clickCharacter(event){
+		
 	changePang(characterArr);
 	updateHtml(characterArr);
-	
+
 }
 
 var count = 0;
+//store second click
 var pos = {x: -1, y:-1};
+//store first click
 var key = {x: -1, y:-1};
 
 //처음 클릭한 값과 두번째 클릭한(상하좌우)값 체인지
-//arr : 캐릭배열
-//return : 없음
 function changePang(arr){
 
 	count++;
@@ -97,7 +122,12 @@ function changePang(arr){
 		var k = getPosition(event);
 		key.x = k[0];
 		key.y = k[1];
-		console.log("key",key);
+
+		//console.log("key",key);
+
+		changeImg(arr, key.x, key.y);
+
+		//스킬 조건문
 		if(arr[key.x][key.y] == 7){
 			itemSkillCol(arr, 0, key.y); 
 			itemSkillRow(arr, 6, 0);				
@@ -132,7 +162,15 @@ function changePang(arr){
 	}
 }
 
+//클릭하면 이미지 체인지
+function changeImg(arr, x, y){
+	if(arr[x][y] == 1){
+		//document.getElementById("m"+x+y).src = "img/jl02.png";
+		key.image = "img/jl02.png";
+	}
+}
 
+//캐릭터 스왑
 function characterSwap(arr, x1, y1, x2, y2) {
 	var temp = arr[x1][y1];
 	arr[x1][y1] = arr[x2][y2];
@@ -148,20 +186,13 @@ function getPosition(event){
 
 	return arrId;
 
-/*
-	//target에 drag setAttribute 
-	var set = event.target;
-	console.log(set);		
-	set.setAttribute("draggable", "true");
-	set.setAttribute("ondragstart", "drag(event)");
-*/	
 }
 
+//같은 캐릭이 있는 행 카운트
 function countRow(arr, i, j) {
 	var x = arr[i][j]
 	var countX = 0;
-	while(j < 7) {
-		//console.log("j",j);		
+	while(j < 7) {	
 		if (arr[i][j] == x) {
 			countX++;
 		} else {
@@ -172,11 +203,11 @@ function countRow(arr, i, j) {
 	return countX;
 }
 
+//같은 캐릭이 있는 열 카운트
 function countCol(arr, i, j){
 	var y = arr[i][j];
 	var countY = 0;
 	while(i < 7){
-		//console.log("ij",i, j);
 		if(arr[i][j] == y){
 			countY++;
 		} else {
@@ -187,14 +218,16 @@ function countCol(arr, i, j){
 	return countY;
 }
 
+
+
+//열 행 카운트한 값을 체크
 function check(arr){
 	for(var i = 0; i < 7; i++){
 		for(var j = 0; j < 5; j++){
 			var x = countRow(arr, i, j);
 			if (x >= 3) {
-				console.log("줄 지워!", i, j, x);
+				console.log("줄 지워!", i, j, x);	
 				eraseRow(arr, i, j, x);
-
 			}
 		}
 	}
@@ -211,6 +244,8 @@ function check(arr){
 	
 }
 
+/*     지우기      */
+
 //행을 지우는 함수
 //arr:캐릭배열 x:idx0 y:idx1 n:중복값 개수
 function eraseRow(arr, x, y, n){
@@ -218,7 +253,6 @@ function eraseRow(arr, x, y, n){
 	for(var i = x; i >= 0; i--){
 		for(var j = 0; j < n; j++){
 			if(i == 0){
-
 				var r = Math.floor(Math.random() * numArr.length);
 				arr[i][y + j] = numArr[r];
 			} else {
@@ -226,6 +260,7 @@ function eraseRow(arr, x, y, n){
 			}			
 		}
 	}
+
 }
 
 //열을 지우는 함수
@@ -245,6 +280,8 @@ function eraseCol(arr, x, y, n){
 }
 
 
+/*     스킬      */
+//아이템 스킬 클릭시 마지막 열 0~6까지 값 지움
 function itemSkillRow(arr, x, y){
 
 	for(var i = x; i >= 0; i--){
@@ -258,13 +295,46 @@ function itemSkillRow(arr, x, y){
 		}
 	}	
 }
-
-
+//아이템 스킬 클릭시 해당 열 0~6까지 값 지움
 function itemSkillCol(arr, x, y){
 	for(var i = 0; i < 7; i++){
 		var r = Math.floor(Math.random() * numArr.length);
 		arr[i][y] = numArr[r];					
 	}
 }
+
+
+
+/*     시간      */
+var sec = 0;
+var click = 0;
+var intervalSec;
+function startBtn(){
+
+	sec = 0;
+	intervalSec = setInterval("countSec()", 1000); 
+
+}
+
+//게임시간  1분 카운트하는 함수
+function countSec(){ 
+	sec += 1;
+
+	document.getElementById("second").innerHTML = sec; 
+	document.getElementById("btn").disabled = true;
+
+	if(sec > 60){
+		document.getElementById("second").innerHTML = "gameOver"; 
+		document.getElementById("btn").disabled = false;
+		clearInterval(intervalSec);
+		//TODO Pang Disabled 처리
+	}
+
+}
+
+
+
+
+
 
 
