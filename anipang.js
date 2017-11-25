@@ -1,16 +1,13 @@
 var numArr = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7];
 var characterArr = [];
-
-
-
-
+var score = 0;
+var running = false;
 
 //배열을 만드는 함수
 function generateArr(arr){
 	for(var i = 0; i < 7; i++){
 		characterArr[i] = [];
 		for(var j = 0; j < 7; j++){
-			//characterArr[i][j] = i * 7 + j +1;
 			var r = Math.floor(Math.random() * numArr.length);
 			characterArr[i][j] = numArr[r];
 		}
@@ -20,7 +17,7 @@ generateArr(characterArr);
 
 
 
-//html화면에 뿌려주기
+//updateHtml
 function updateHtml(arr){
 	for(var i = 0; i < 7; i++){
 		for(var j = 0; j < 7; j++){
@@ -34,7 +31,6 @@ function updateHtml(arr){
    					x.setAttribute("src", "img/jl02.png");
    				} else {
    					x.setAttribute("src", "img/jl01.png");
-
    				}
 			}
 			if(characterArr[i][j] == 2){	
@@ -76,21 +72,14 @@ function updateHtml(arr){
    				x.setAttribute("src", "img/honux.png");
 			}			
 
-
-
-			   	x.setAttribute("width", "45");
-   				x.setAttribute("height", "45");
-			    x.setAttribute("alt", "Pang");
-			   	h.appendChild(x);
-
-			   	//setInterval(myImg(), 5000);
+		   	x.setAttribute("width", "45");
+			x.setAttribute("height", "45");
+		    x.setAttribute("alt", "Pang");
+		   	h.appendChild(x);
 		}
 	}
-	console.log("update", key);
-
 }
 updateHtml(characterArr);
-
 
 
 
@@ -98,19 +87,26 @@ document.getElementById("pang").addEventListener("click", clickCharacter);
 
 
 
-//캐릭터 클릭 하면 실행되는 이벤트함수 
+//click character 
 function clickCharacter(event){
+
+	if(running) {
+		changePang(characterArr);
+		updateHtml(characterArr);
+	} else {
+		return;
+	}
 		
-	changePang(characterArr);
-	updateHtml(characterArr);
+
 
 }
 
 var count = 0;
-//store second click
-var pos = {x: -1, y:-1};
+
 //store first click
 var key = {x: -1, y:-1};
+//store second click
+var pos = {x: -1, y:-1};
 
 //처음 클릭한 값과 두번째 클릭한(상하좌우)값 체인지
 function changePang(arr){
@@ -123,11 +119,10 @@ function changePang(arr){
 		key.x = k[0];
 		key.y = k[1];
 
-		//console.log("key",key);
+		console.log("key",key);
 
-		changeImg(arr, key.x, key.y);
 
-		//스킬 조건문
+		//skill
 		if(arr[key.x][key.y] == 7){
 			itemSkillCol(arr, 0, key.y); 
 			itemSkillRow(arr, 6, 0);				
@@ -145,6 +140,22 @@ function changePang(arr){
 		console.log("pos",pos);
 
 		var move = false;
+
+		// console.log("arr[key.x][key.y] = " + arr[key.x][key.y]);
+		// console.log("arr[pos.x][pos.y-1] = " + arr[pos.x][pos.y-1]);
+		// console.log("arr[pos.x][pos.y-2] = " + arr[pos.x][pos.y-2]);
+		// console.log("arr[key.x][key.y] == " + arr[key.x][key.y] == arr[pos.x][pos.y-1]);
+
+		// if(arr[key.x][key.y] == arr[pos.x][pos.y - 1] == arr[pos.x][pos.y - 2]) {
+		// 	console.log("바꿀수있음");
+		// 	move = true;
+		// }		
+
+
+
+
+
+
 		if(key.x == pos.x && Math.abs(key.y - pos.y) === 1) {
 				move = true;
 		}
@@ -162,13 +173,7 @@ function changePang(arr){
 	}
 }
 
-//클릭하면 이미지 체인지
-function changeImg(arr, x, y){
-	if(arr[x][y] == 1){
-		//document.getElementById("m"+x+y).src = "img/jl02.png";
-		key.image = "img/jl02.png";
-	}
-}
+
 
 //캐릭터 스왑
 function characterSwap(arr, x1, y1, x2, y2) {
@@ -228,6 +233,8 @@ function check(arr){
 			if (x >= 3) {
 				console.log("줄 지워!", i, j, x);	
 				eraseRow(arr, i, j, x);
+				score += x * 5;
+				document.getElementById("score").innerHTML = score;
 			}
 		}
 	}
@@ -236,8 +243,10 @@ function check(arr){
 		for(var i = 0; i < 5; i++){
 			var y = countCol(arr, i, j);
 			if (y >= 3) {
-				console.log("열 지워!", i, j, y);
+				console.log("열 지워!", i, j, y);			
 				eraseCol(arr, i, j, y);
+				score += y * 5;
+				document.getElementById("score").innerHTML = score;
 			} 
 		}
 	}		
@@ -293,7 +302,9 @@ function itemSkillRow(arr, x, y){
 				arr[i][y + j] = arr[i - 1][y + j];
 			}			
 		}
-	}	
+	}
+	score += 50;
+	document.getElementById("score").innerHTML = score;
 }
 //아이템 스킬 클릭시 해당 열 0~6까지 값 지움
 function itemSkillCol(arr, x, y){
@@ -306,32 +317,39 @@ function itemSkillCol(arr, x, y){
 
 
 /*     시간      */
-var sec = 0;
+var sec = 60;
 var click = 0;
 var intervalSec;
 function startBtn(){
-
-	sec = 0;
+	score = 0;
+	sec = 60;
+	running = true;
+	document.getElementById("score").innerHTML = score;
 	intervalSec = setInterval("countSec()", 1000); 
 
 }
 
 //게임시간  1분 카운트하는 함수
 function countSec(){ 
-	sec += 1;
+	sec -= 1;
 
 	document.getElementById("second").innerHTML = sec; 
-	document.getElementById("btn").disabled = true;
+	document.getElementById("startbtn").disabled = true;
 
-	if(sec > 60){
-		document.getElementById("second").innerHTML = "gameOver"; 
-		document.getElementById("btn").disabled = false;
+	if(sec == 0){
+		alert("GAME OVER");
+		document.getElementById("startbtn").disabled = false;
+		running = false;
 		clearInterval(intervalSec);
 		//TODO Pang Disabled 처리
 	}
 
 }
 
+function resetBtn(){
+	generateArr(characterArr);
+	updateHtml(characterArr);
+}
 
 
 
