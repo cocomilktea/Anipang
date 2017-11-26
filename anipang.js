@@ -2,6 +2,12 @@ var numArr = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 
 var characterArr = [];
 var score = 0;
 var running = false;
+var move = false;
+var count = 0;
+var pangX = 0;
+var pangY = 0;
+
+
 
 //배열을 만드는 함수
 function generateArr(arr){
@@ -23,59 +29,58 @@ function updateHtml(arr){
 		for(var j = 0; j < 7; j++){
 			var h = document.getElementById("n"+i+j);
 			h.innerHTML = characterArr[i][j];
-			var x = document.createElement("IMG");
-			x.setAttribute("id", "m"+i+j); 
+			var img = document.createElement("IMG");
 			
 			if(characterArr[i][j] == 1 ){		
-				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
-   					x.setAttribute("src", "img/jl02.png");
+				if (!!key && key.x == i && key.y == j && count % 2 == 1) {
+   					img.setAttribute("src", "img/jl02.png");
    				} else {
-   					x.setAttribute("src", "img/jl01.png");
+   					img.setAttribute("src", "img/jl01.png");
    				}
 			}
 			if(characterArr[i][j] == 2){	
 				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
-   					x.setAttribute("src", "img/jina02.png");
+   					img.setAttribute("src", "img/jina02.png");
    				} else {
-   					x.setAttribute("src", "img/jina01.png");;
+   					img.setAttribute("src", "img/jina01.png");;
    				}				
 			}
 			if(characterArr[i][j] == 3){	
 				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
-   					x.setAttribute("src", "img/heana02.png");
+   					img.setAttribute("src", "img/heana02.png");
    				} else {
-   					x.setAttribute("src", "img/heana01.png");
+   					img.setAttribute("src", "img/heana01.png");
    				}					
 			}			
 			if(characterArr[i][j] == 4){	
 				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
-   					x.setAttribute("src", "img/koo02.png");
+   					img.setAttribute("src", "img/koo02.png");
    				} else {
-   					x.setAttribute("src", "img/koo01.png");
+   					img.setAttribute("src", "img/koo01.png");
    				}								
 			}
 			if(characterArr[i][j] == 5){	
 				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
-   					x.setAttribute("src", "img/jack02.png");
+   					img.setAttribute("src", "img/jack02.png");
    				} else {
-   					x.setAttribute("src", "img/jack01.png");
+   					img.setAttribute("src", "img/jack01.png");
    				}				
 			}
 			if(characterArr[i][j] == 6){	
 				if (!!key && key.x== i && key.y == j && count % 2 == 1) {
-   					x.setAttribute("src", "img/hyun02.png");
+   					img.setAttribute("src", "img/hyun02.png");
    				} else {
-   					x.setAttribute("src", "img/hyun01.png");
+   					img.setAttribute("src", "img/hyun01.png");
    				}					
 			}
 			if(characterArr[i][j] == 7){		
-   				x.setAttribute("src", "img/honux.png");
+   				img.setAttribute("src", "img/honux.png");
 			}			
 
-		   	x.setAttribute("width", "45");
-			x.setAttribute("height", "45");
-		    x.setAttribute("alt", "Pang");
-		   	h.appendChild(x);
+		   	img.setAttribute("width", "45");
+			img.setAttribute("height", "45");
+		    img.setAttribute("alt", "Pang");
+		   	h.appendChild(img);
 		}
 	}
 }
@@ -92,6 +97,8 @@ function clickCharacter(event){
 
 	if(running) {
 		changePang(characterArr);
+		check(characterArr);
+
 		updateHtml(characterArr);
 	} else {
 		return;
@@ -101,7 +108,7 @@ function clickCharacter(event){
 
 }
 
-var count = 0;
+
 
 //store first click
 var key = {x: -1, y:-1};
@@ -119,8 +126,9 @@ function changePang(arr){
 		key.x = k[0];
 		key.y = k[1];
 
-		console.log("key",key);
-
+		//console.log("key",key);
+		document.getElementById("n"+key.x+key.y).style.border = "1px dotted #ef5285";
+		document.getElementById("n"+key.x+key.y).style.boxShadow = "0 0 35px #888888";
 
 		//skill
 		if(arr[key.x][key.y] == 7){
@@ -128,6 +136,8 @@ function changePang(arr){
 			itemSkillRow(arr, 6, 0);				
 			var r = Math.floor(Math.random() * numArr.length);
 			arr[key.x + 1][key.y] = numArr[r];
+			document.getElementById("n"+key.x+key.y).style.border = "none";
+			document.getElementById("n"+key.x+key.y).style.boxShadow = "none";
 							
 			count = 0;
 		}
@@ -137,23 +147,12 @@ function changePang(arr){
 		var p  = getPosition(event);	
 		pos.x = p[0];
 		pos.y = p[1];
-		console.log("pos",pos);
+		//console.log("pos",pos);
+		document.getElementById("n"+key.x+key.y).style.border = "none";
+		document.getElementById("n"+key.x+key.y).style.boxShadow = "none";
 
-		var move = false;
-
-		// console.log("arr[key.x][key.y] = " + arr[key.x][key.y]);
-		// console.log("arr[pos.x][pos.y-1] = " + arr[pos.x][pos.y-1]);
-		// console.log("arr[pos.x][pos.y-2] = " + arr[pos.x][pos.y-2]);
-		// console.log("arr[key.x][key.y] == " + arr[key.x][key.y] == arr[pos.x][pos.y-1]);
-
-		// if(arr[key.x][key.y] == arr[pos.x][pos.y - 1] == arr[pos.x][pos.y - 2]) {
-		// 	console.log("바꿀수있음");
-		// 	move = true;
-		// }		
-
-
-
-
+		//ableToChange(arr, key.x, key.y, pos.x, pos.y);
+	
 
 
 		if(key.x == pos.x && Math.abs(key.y - pos.y) === 1) {
@@ -171,6 +170,89 @@ function changePang(arr){
 		}
 		count = 0;
 	}
+}
+
+
+function ableToChange(arr, keyx, keyy, posx, posy){
+
+	console.log("ableTo arr[keyx][keyy] = " + arr[keyx][keyy]);
+	console.log("ableTo arr[posx][posy - 1] = " + arr[posx][posy - 1]);
+	console.log("ableTo arr[posx][posy - 2] = " + arr[posx][posy - 2]);
+	console.log("ableTo arr[keyx][keyy] == arr[keyx][keyx - 1]" + arr[keyx][keyy] == arr[keyx][keyx - 2]);	
+	console.log("ableTo arr[keyx][keyy] == arr[posx][posy - 1]" + arr[keyx][keyy] == arr[posx][posy - 1] == arr[posx][posy - 2]);	
+
+	//left 
+	if(arr[keyx][keyy] == arr[posx][posy - 1] == arr[posx][posy - 2]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx - 1][posy] == arr[posx - 2][posy]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx + 1][posy] == arr[posx + 2][posy]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx - 1][posy] == arr[posx + 1][posy]) {
+		console.log("바꿀수있음");
+		move = true;
+	}	
+
+	//right
+	if(arr[keyx][keyy] == arr[posx][posy + 1] == arr[posx][posy + 2]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx - 1][posy] == arr[posx - 2][posy]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx + 1][posy] == arr[posx + 2][posy]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx - 1][posy] == arr[posx + 1][posy]) {
+		console.log("바꿀수있음");
+		move = true;
+	}	
+
+	//up
+	if(arr[keyx][keyy] == arr[posx][posy + 1] == arr[posx][posy + 2]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx - 1][posy] == arr[posx - 2][posy]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx][posy - 1] == arr[posx][posy - 2]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx][posy - 1] == arr[posx][posy + 1]) {
+		console.log("바꿀수있음");
+		move = true;
+	}	
+
+	//down
+	if(arr[keyx][keyy] == arr[posx][posy + 1] == arr[posx][posy + 2]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx + 1][posy] == arr[posx + 2][posy]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx][posy - 1] == arr[posx][posy - 2]) {
+		console.log("바꿀수있음");
+		move = true;
+	}
+	if(arr[keyx][keyy] == arr[posx][posy - 1] == arr[posx][posy + 1]) {
+		console.log("바꿀수있음");
+		move = true;
+	}	
+
 }
 
 
@@ -229,11 +311,11 @@ function countCol(arr, i, j){
 function check(arr){
 	for(var i = 0; i < 7; i++){
 		for(var j = 0; j < 5; j++){
-			var x = countRow(arr, i, j);
-			if (x >= 3) {
-				console.log("줄 지워!", i, j, x);	
-				eraseRow(arr, i, j, x);
-				score += x * 5;
+			pangX = countRow(arr, i, j);
+			if (pangX >= 3) {
+				console.log("줄 지워!", i, j, pangX);	
+				eraseRow(arr, i, j, pangX);
+				score += pangX * 5;
 				document.getElementById("score").innerHTML = score;
 			}
 		}
@@ -241,17 +323,20 @@ function check(arr){
 
 	for(var j = 0; j < 7; j++){
 		for(var i = 0; i < 5; i++){
-			var y = countCol(arr, i, j);
-			if (y >= 3) {
-				console.log("열 지워!", i, j, y);			
-				eraseCol(arr, i, j, y);
-				score += y * 5;
+			pangY = countCol(arr, i, j);
+			if (pangY >= 3) {
+				console.log("열 지워!", i, j, pangY);			
+				eraseCol(arr, i, j, pangY);
+				score += pangY * 5;
 				document.getElementById("score").innerHTML = score;
 			} 
 		}
 	}		
 	
 }
+
+
+
 
 /*     지우기      */
 
@@ -265,12 +350,17 @@ function eraseRow(arr, x, y, n){
 				var r = Math.floor(Math.random() * numArr.length);
 				arr[i][y + j] = numArr[r];
 			} else {
+				// var delay;
+				// for(var k = 0; k < n; k++){
+ 			//   		delay = document.getElementById('n'+x+(y+k));
+ 			//   		delay.style.backgroundColor='#000';					
+				// }			
 				arr[i][y + j] = arr[i - 1][y + j];
 			}			
 		}
 	}
-
 }
+
 
 //열을 지우는 함수
 //arr:캐릭배열 x:idx0 y:idx1 n:중복값 개수
@@ -287,6 +377,8 @@ function eraseCol(arr, x, y, n){
 		}
 	}
 }
+
+
 
 
 /*     스킬      */
@@ -310,10 +402,10 @@ function itemSkillRow(arr, x, y){
 function itemSkillCol(arr, x, y){
 	for(var i = 0; i < 7; i++){
 		var r = Math.floor(Math.random() * numArr.length);
-		arr[i][y] = numArr[r];					
+		arr[i][y] = numArr[r];	
+
 	}
 }
-
 
 
 /*     시간      */
@@ -321,9 +413,14 @@ var sec = 60;
 var click = 0;
 var intervalSec;
 function startBtn(){
+	document.getElementById("startbtn").style.color = "#60c5ba";
+	document.getElementById("startbtn").style.backgroundColor = "#ef5285";
+	document.getElementById("startbtn").disabled = true;
 	score = 0;
 	sec = 60;
 	running = true;
+	check(characterArr);
+	updateHtml(characterArr);
 	document.getElementById("score").innerHTML = score;
 	intervalSec = setInterval("countSec()", 1000); 
 
@@ -332,16 +429,15 @@ function startBtn(){
 //게임시간  1분 카운트하는 함수
 function countSec(){ 
 	sec -= 1;
-
 	document.getElementById("second").innerHTML = sec; 
-	document.getElementById("startbtn").disabled = true;
 
 	if(sec == 0){
-		alert("GAME OVER");
+		alert( "score : " + score + ".");
+		document.getElementById("startbtn").style.color = "#ef5285";
+		document.getElementById("startbtn").style.backgroundColor = "#60c5ba";
 		document.getElementById("startbtn").disabled = false;
 		running = false;
 		clearInterval(intervalSec);
-		//TODO Pang Disabled 처리
 	}
 
 }
